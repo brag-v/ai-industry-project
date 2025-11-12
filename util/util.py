@@ -2,18 +2,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
     
-def load_ed_data(data_file):
-    # Read the CSV file
+def load_data(data_file):
     data = pd.read_csv(data_file, sep=',', parse_dates=[2, 3])
-    # Remove the "Flow" column
-    f_cols = [c for c in data.columns if c != 'Flow']
-    data = data[f_cols]
-    # Convert a few fields to categorical format
-    data['Code'] = data['Code'].astype('category')
-    data['Outcome'] = data['Outcome'].astype('category')
-    # Sort by triage time
-    data.sort_values(by='Triage', inplace=True)
-    # Discard the firl
     return data
 
 def plot_dataframe(data, labels=None, vmin=-1.96, vmax=1.96,
