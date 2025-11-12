@@ -3,7 +3,9 @@ import pandas as pd
 
     
 def load_data(data_file):
-    data = pd.read_csv(data_file, sep=',', parse_dates=[2, 3])
+    data = pd.read_csv(data_file)
+    for col in ["road_type", "lighting", "weather", "time_of_day"]:
+        data[col]=data[col].astype('category').cat.codes
     return data
 
 def plot_dataframe(data, labels=None, vmin=-1.96, vmax=1.96,
