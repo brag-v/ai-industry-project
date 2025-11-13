@@ -4,9 +4,13 @@ import pandas as pd
     
 def load_data(data_file):
     data = pd.read_csv(data_file)
+    # for col in ["road_type", "lighting", "weather", "time_of_day"]:
+    #     data[col]=data[col].astype('category').cat.codes
+    return data
+
+def cast_columns_to_categories(data):
     for col in ["road_type", "lighting", "weather", "time_of_day"]:
         data[col]=data[col].astype('category').cat.codes
-    return data
 
 def plot_dataframe(data, labels=None, vmin=-1.96, vmax=1.96,
                    figsize=None, s=4, xlabel=None, ylabel=None):
