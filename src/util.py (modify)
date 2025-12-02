@@ -1,0 +1,9 @@
+def calculate_shap_values(model, data):
+    import shap
+    explainer = shap.Explainer(model)
+    shap_values = explainer(data)
+    return shap_values
+
+def plot_shap_summary(shap_values, feature_names):
+    import shap
+    shap.summary_plot(shap_values, feature_names=feature_names)
