@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import shap
 import numpy as np
-
+import seaborn
     
 def load_data(data_file):
     data = pd.read_csv(data_file)
@@ -29,6 +29,27 @@ def plot_dataframe(data, labels=None, vmin=-1.96, vmax=1.96,
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.tight_layout()
+
+
+def plot_inputs_against_target(input, target):
+    scatter_plot_cols = ["curvature"]
+    box_plot_cols = [c for c in input.columns if c not in scatter_plot_cols]
+
+    fig, axes = plt.subplots(3, 4, figsize=(20, 10))
+    axes = axes.flatten()
+
+    for i, col in enumerate(scatter_plot_cols):
+        ax = axes[i]
+        ax.scatter(input[col], target, alpha=0.5)
+        ax.set_title(f"{col} vs accident_risk")
+
+    for i, col in enumerate(box_plot_cols):
+        ax = axes[i + len(scatter_plot_cols)]
+        seaborn.boxplot(x=input[col], y=target, ax=ax)
+        ax.set_title(f"{col} vs accident_risk")
+
+    plt.tight_layout()
+    plt.show()
 
 def calculate_shap_values(model, X_data, model_type='tree'):
     """
