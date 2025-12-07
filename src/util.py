@@ -3,6 +3,9 @@ import pandas as pd
 import shap
 import numpy as np
 import seaborn
+import random
+
+shap.initjs()
     
 def load_data(data_file):
     data = pd.read_csv(data_file)
@@ -88,18 +91,28 @@ def plot_shap_summary(shap_values, X_data, model_name, plot_type="bar"):
     plt.tight_layout()
     plt.show()
 
-def plot_shap_dependence(shap_values, X_data, feature_name, model_name):
-    """
-    Plot SHAP dependence plot to visualize feature interactions and effects.
-    
-    Args:
-        shap_values: SHAP values from explainer
-        X_data: Feature data (pandas DataFrame)
-        feature_name: Name of feature to analyze
-        model_name: Name of the model for title
-    """
-    plt.figure()
-    shap.dependence_plot(feature_name, shap_values, X_data, show=False)
-    plt.title(f"SHAP Dependence Plot: {feature_name} - {model_name}")
+def all_pairs_dependence_plots(shap_values, X_data, main_features, model_name):
+    fig, axes = plt.subplots(len(features) , len(features) - 1, figsize=(20, 16))
+    axes = axes.flatten()
+
+    i = 0
+    for feature in features:
+        for interaction in features:
+            if feature == interaction:
+                continue
+            ax = axes[i]
+            i += 1
+            shap.dependence_plot(feature, shap_values, X_data, show=False, interaction_index=interaction, ax=ax)
+            # ax.title(f"{feature} - {interaction} ({model_name})")
+    plt.title(f"Shap feature dependencies ({model_name})")
     plt.tight_layout()
     plt.show()
+    
+def plot_random_force_plots(shap_explainer, shap_values, features, count):
+    for i in random.sample(range(len(shap_values)), count):
+        display(shap.plots.force(
+            shap_explainer.expected_value,
+            shap_values[i],
+            features.iloc[i],
+            feature_names=features.columns
+        ))
