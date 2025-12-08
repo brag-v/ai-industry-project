@@ -43,13 +43,41 @@ def plot_inputs_against_target(input, target):
 
     for i, col in enumerate(scatter_plot_cols):
         ax = axes[i]
-        ax.scatter(input[col], target, alpha=0.5)
+        ax.scatter(input[col], target, alpha=0.1)
         ax.set_title(f"{col} vs accident_risk")
 
     for i, col in enumerate(box_plot_cols):
         ax = axes[i + len(scatter_plot_cols)]
         seaborn.boxplot(x=input[col], y=target, ax=ax)
         ax.set_title(f"{col} vs accident_risk")
+
+    plt.tight_layout()
+    plt.show()
+    
+def plot_input_distributions(df):
+    fig, axes = plt.subplots(3, 4, figsize=(20, 10))
+    axes = axes.flatten()
+
+    for i, col in enumerate(df.columns):
+        ax = axes[i]
+        data = df[col]
+
+        # Handle booleans as integers
+        if data.dtype == "bool":
+            data = data.astype(int)
+
+        # Decide bins
+        if np.issubdtype(data.dtype, np.floating):
+            bins = min(25, len(data.unique()))
+            ax.hist(data, bins=bins, edgecolor='black')
+        else:
+            # Non-float → integer/categorical plot
+            counts = data.value_counts().sort_index()
+            ax.bar(counts.index.astype(str), counts.values, edgecolor='black')
+            ax.set_xticks(range(len(counts)))
+            ax.set_xticklabels(counts.index.astype(str))
+
+        ax.set_title(col)
 
     plt.tight_layout()
     plt.show()
@@ -91,7 +119,7 @@ def plot_shap_summary(shap_values, X_data, model_name, plot_type="bar"):
     plt.tight_layout()
     plt.show()
 
-def all_pairs_dependence_plots(shap_values, X_data, main_features, model_name):
+def all_pairs_dependence_plots(shap_values, X_data, features, model_name):
     fig, axes = plt.subplots(len(features) , len(features) - 1, figsize=(20, 16))
     axes = axes.flatten()
 
