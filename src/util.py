@@ -82,45 +82,9 @@ def plot_input_distributions(df):
     plt.tight_layout()
     plt.show()
 
-def calculate_shap_values(model, X_data, model_type='tree'):
-    """
-    Calculate SHAP values for model interpretability and feature interaction analysis.
-    
-    Args:
-        model: Trained model (RandomForest or GradientBoosting)
-        X_data: Feature data (pandas DataFrame)
-        model_type: 'tree' for tree-based models
-    
-    Returns:
-        explainer: SHAP explainer object
-        shap_values: SHAP values array
-    """
-    if model_type == 'tree':
-        explainer = shap.TreeExplainer(model)
-    else:
-        explainer = shap.KernelExplainer(model.predict, X_data)
-    
-    shap_values = explainer.shap_values(X_data)
-    return explainer, shap_values
-
-def plot_shap_summary(shap_values, X_data, model_name, plot_type="bar"):
-    """
-    Plot SHAP summary visualization showing feature importance and impact.
-    
-    Args:
-        shap_values: SHAP values from explainer
-        X_data: Feature data (pandas DataFrame)
-        model_name: Name of the model for title
-        plot_type: 'bar' for importance, 'dot' for interaction effects
-    """
-    plt.figure()
-    shap.summary_plot(shap_values, X_data, plot_type=plot_type, show=False)
-    plt.title(f"SHAP {plot_type.capitalize()} Plot - {model_name}")
-    plt.tight_layout()
-    plt.show()
 
 def all_pairs_dependence_plots(shap_values, X_data, features, model_name):
-    fig, axes = plt.subplots(len(features) , len(features) - 1, figsize=(20, 16))
+    fig, axes = plt.subplots(len(features), len(features) - 1, figsize=(20, 16))
     axes = axes.flatten()
 
     i = 0
@@ -130,17 +94,15 @@ def all_pairs_dependence_plots(shap_values, X_data, features, model_name):
                 continue
             ax = axes[i]
             i += 1
-            shap.dependence_plot(feature, shap_values, X_data, show=False, interaction_index=interaction, ax=ax)
+            shap.dependence_plot(
+                feature,
+                shap_values,
+                X_data,
+                show=False,
+                interaction_index=interaction,
+                ax=ax,
+            )
             # ax.title(f"{feature} - {interaction} ({model_name})")
     plt.title(f"Shap feature dependencies ({model_name})")
     plt.tight_layout()
     plt.show()
-    
-def plot_random_force_plots(shap_explainer, shap_values, features, count):
-    for i in random.sample(range(len(shap_values)), count):
-        display(shap.plots.force(
-            shap_explainer.expected_value,
-            shap_values[i],
-            features.iloc[i],
-            feature_names=features.columns
-        ))
