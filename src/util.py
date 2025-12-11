@@ -106,3 +106,37 @@ def all_pairs_dependence_plots(shap_values, X_data, features, model_name):
     plt.title(f"Shap feature dependencies ({model_name})")
     plt.tight_layout()
     plt.show()
+    
+def plot_results(results): 
+    results_df = pd.DataFrame(results)
+
+    # Visualize model performance comparison
+    fig, axes = plt.subplots(1, 3, figsize=(16, 4))
+
+    # Plot 1: R² Scores
+    axes[0].bar(results_df['Model'], results_df['R²'], color='steelblue')
+    axes[0].set_ylabel('R² Score', fontsize=11)
+    axes[0].set_title('Model R² Score Comparison', fontsize=12, fontweight='bold')
+    axes[0].set_ylim([0, 1])
+    for i, v in enumerate(results_df['R²']):
+        axes[0].text(i, v + 0.02, f'{v:.4f}', ha='center', fontsize=9)
+    axes[0].tick_params(axis='x', rotation=45)
+
+    # Plot 2: MAE (Mean Absolute Error)
+    axes[1].bar(results_df['Model'], results_df['MAE'], color='coral')
+    axes[1].set_ylabel('MAE', fontsize=11)
+    axes[1].set_title('Model MAE Comparison', fontsize=12, fontweight='bold')
+    for i, v in enumerate(results_df['MAE']):
+        axes[1].text(i, v + 0.002, f'{v:.4f}', ha='center', fontsize=9)
+    axes[1].tick_params(axis='x', rotation=45)
+
+    # Plot 3: MSE (Mean Squared Error)
+    axes[2].bar(results_df['Model'], results_df['MSE'], color='seagreen')
+    axes[2].set_ylabel('MSE', fontsize=11)
+    axes[2].set_title('Model MSE Comparison', fontsize=12, fontweight='bold')
+    for i, v in enumerate(results_df['MSE']):
+        axes[2].text(i, v + 0.0005, f'{v:.4f}', ha='center', fontsize=9)
+    axes[2].tick_params(axis='x', rotation=45)
+
+    plt.tight_layout()
+    plt.show()
