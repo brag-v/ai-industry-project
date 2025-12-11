@@ -4,6 +4,7 @@ import shap
 import numpy as np
 import seaborn
 import random
+from sklearn.metrics import root_mean_squared_error, mean_absolute_error, r2_score
 
 shap.initjs()
     
@@ -140,3 +141,19 @@ def plot_results(results):
 
     plt.tight_layout()
     plt.show()
+    
+
+def log_result(results, y_val, y_pred, model_name):
+    rmse = root_mean_squared_error(y_val, y_pred)
+    mae = mean_absolute_error(y_val, y_pred)
+    r2 = r2_score(y_val, y_pred)
+
+    results.append(
+        {
+            "Model": model_name,
+            "RMSE": rmse,
+            "MAE": mae,
+            "R²": r2,
+        }
+    )
+    print(f"RMSE: {rmse:.6f}, MAE: {mae:.6f}, R²: {r2:.4f}")
