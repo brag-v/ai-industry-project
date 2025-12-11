@@ -130,11 +130,11 @@ def plot_results(results):
         axes[1].text(i, v + 0.002, f'{v:.4f}', ha='center', fontsize=9)
     axes[1].tick_params(axis='x', rotation=45)
 
-    # Plot 3: MSE (Mean Squared Error)
-    axes[2].bar(results_df['Model'], results_df['MSE'], color='seagreen')
-    axes[2].set_ylabel('MSE', fontsize=11)
-    axes[2].set_title('Model MSE Comparison', fontsize=12, fontweight='bold')
-    for i, v in enumerate(results_df['MSE']):
+    # Plot 3: RMSE (Mean Squared Error)
+    axes[2].bar(results_df['Model'], results_df['RMSE'], color='seagreen')
+    axes[2].set_ylabel('RMSE', fontsize=11)
+    axes[2].set_title('Model RMSE Comparison', fontsize=12, fontweight='bold')
+    for i, v in enumerate(results_df['RMSE']):
         axes[2].text(i, v + 0.0005, f'{v:.4f}', ha='center', fontsize=9)
     axes[2].tick_params(axis='x', rotation=45)
 
